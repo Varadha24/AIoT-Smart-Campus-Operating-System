@@ -253,4 +253,229 @@ Connect the four IR sensors to the ESP32 GPIO pins:
 
 Connect the I2C LCD as follows:
 
-| LCD Pin | E
+| LCD Pin | ESP32   |
+| ------- | ------- |
+| SDA     | GPIO 21 |
+| SCL     | GPIO 22 |
+
+### Servo Motor
+
+Connect the servo signal line to:
+
+```text
+Servo Signal → GPIO 26
+```
+
+The servo is powered using the specified **5V supply**.
+
+### Power & Ground
+
+* Connect the battery to the Arduino UNO VIN/GND input as specified by the hardware design.
+* Use the resulting supply for the required LCD and servo power.
+* Ensure that all connected devices share a **common ground**.
+
+```text
+ESP32 GND
+     │
+     ├── Arduino UNO GND
+     │
+     └── Battery (-)
+```
+
+> **Warning:** Verify the voltage and current requirements of the ESP32, LCD, servo, and sensors before connecting the power supply. Do not exceed the rated input voltage of any component.
+
+---
+
+## Smart Parking Deployment
+
+1. Upload the smart parking firmware to **ESP32 #3** using Arduino IDE.
+
+2. Power on the system.
+
+3. The LCD will initialize and display:
+
+   ```text
+   Initializing...
+   ```
+
+4. The system performs a self-test of the connected IR sensors.
+
+5. Once initialization is complete, the LCD displays the available parking slots.
+
+Example:
+
+```text
+Slots Free: 3
+```
+
+6. When a vehicle approaches the entrance, the entrance IR sensor detects the vehicle.
+7. The system checks the availability of parking slots.
+8. If a slot is available, the servo motor rotates to open the gate.
+9. When the vehicle occupies a parking slot, the corresponding IR sensor detects the vehicle.
+10. The available-slot count is updated automatically on the LCD.
+11. The system continues monitoring the parking area continuously.
+
+### Parking Full Condition
+
+When all available parking slots are occupied:
+
+```text
+PARKING FULL
+```
+
+The gate remains closed until a parking slot becomes available.
+
+---
+
+# Operating Flow
+
+```text
+                  AIoT SMART CAMPUS
+                         │
+          ┌──────────────┼──────────────┐
+          │              │              │
+          ▼              ▼              ▼
+     ESP32 #1        ESP32 #2        ESP32 #3
+          │              │              │
+          ▼              ▼              ▼
+   Campus Digital    Emergency &     Smart Parking
+       Twin          Energy Monitor      System
+          │              │              │
+          ▼              ▼              ▼
+     Web Dashboard    Mobile App      LCD + Gate
+```
+
+---
+
+# Key Features
+
+* Real-time campus environmental monitoring
+* Live 3D digital twin visualization
+* Temperature and humidity monitoring
+* Air-quality monitoring
+* RFID-based identification/scanning
+* Emergency SOS alerts
+* Fire detection and buzzer alerts
+* Real-time voltage, current, power, and energy monitoring
+* Automated parking-slot detection
+* Vehicle detection and gate control
+* LCD-based parking availability display
+* Modular ESP32-based architecture
+* Independent subsystem operation
+* Local network operation for real-time responsiveness
+
+---
+
+# Technology Stack
+
+### Hardware
+
+* ESP32 development boards
+* RFID module
+* Temperature & humidity sensor
+* Air-quality sensor
+* IR sensors
+* 16×2 I2C LCD
+* Servo motor
+* SOS button
+* Fire sensor
+* Buzzer
+* Arduino UNO
+* Battery/power supply
+
+### Software
+
+* Arduino IDE
+* ESP32 Arduino Framework
+* Visual Studio Code
+* React-based Web UI
+* Node.js / npm
+* Local web server
+* Mobile application
+
+---
+
+# Troubleshooting
+
+| Problem                         | Possible Solution                                                                             |
+| ------------------------------- | --------------------------------------------------------------------------------------------- |
+| ESP32 does not connect to Wi-Fi | Verify SSID/password and ensure the network is 2.4 GHz                                        |
+| Dashboard shows no sensor data  | Check ESP32 IP address and confirm both devices are on the same network                       |
+| Web server does not start       | Run `npm install` and then `npm run dev`                                                      |
+| Mobile app receives no data     | Verify Wi-Fi credentials in ESP32 #2 firmware                                                 |
+| Parking LCD does not display    | Check I2C wiring, power, and common ground                                                    |
+| Parking slot count is incorrect | Check IR sensor wiring and sensor alignment                                                   |
+| Servo does not operate          | Verify GPIO 26 connection and adequate 5V power                                               |
+| Gate does not open              | Confirm that at least one parking slot is available and the entrance IR sensor is functioning |
+
+---
+
+# Project Structure
+
+A typical project structure may look like:
+
+```text
+AIoT-Smart-Campus-Operating-System/
+│
+├── web-dashboard/
+│   ├── src/
+│   ├── public/
+│   ├── package.json
+│   └── ...
+│
+├── firmware/
+│   ├── campus-monitoring/
+│   ├── emergency-energy/
+│   └── smart-parking/
+│
+├── mobile-app/
+│   └── ...
+│
+├── hardware/
+│   ├── circuit-diagrams/
+│   └── documentation/
+│
+└── README.md
+```
+
+> Update the directory names above to match the actual project structure.
+
+---
+
+# Getting Started — Quick Reference
+
+### Web Dashboard
+
+```bash
+cd smart-campus-twin
+npm install
+npm run dev
+```
+
+Then open:
+
+```text
+http://localhost:5173
+```
+
+Configure the ESP32 IP address through the dashboard **Settings** panel.
+
+### ESP32 Firmware
+
+1. Open the required firmware in Arduino IDE.
+2. Select the ESP32 board.
+3. Select the correct COM port.
+4. Upload the firmware.
+5. Configure Wi-Fi where required.
+6. Power the ESP32 using the appropriate power source.
+
+### Smart Parking
+
+1. Connect the sensors and actuators.
+2. Upload the parking firmware.
+3. Power on the system.
+4. Verify LCD initialization.
+5. Verify IR sensor operation.
+6. Test vehicle detection and gate control.
+
+---
