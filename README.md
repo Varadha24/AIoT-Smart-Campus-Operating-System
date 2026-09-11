@@ -410,38 +410,6 @@ The gate remains closed until a parking slot becomes available.
 
 ---
 
-# Project Structure
-
-A typical project structure may look like:
-
-```text
-AIoT-Smart-Campus-Operating-System/
-│
-├── web-dashboard/
-│   ├── src/
-│   ├── public/
-│   ├── package.json
-│   └── ...
-│
-├── firmware/
-│   ├── campus-monitoring/
-│   ├── emergency-energy/
-│   └── smart-parking/
-│
-├── mobile-app/
-│   └── ...
-│
-├── hardware/
-│   ├── circuit-diagrams/
-│   └── documentation/
-│
-└── README.md
-```
-
-> Update the directory names above to match the actual project structure.
-
----
-
 # Getting Started — Quick Reference
 
 ### Web Dashboard
