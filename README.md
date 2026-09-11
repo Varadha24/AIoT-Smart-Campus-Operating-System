@@ -1,73 +1,256 @@
-# AIoT-Smart-Campus-Operating-System
+# AIoT Smart Campus Operating System
 
-The AIoT Smart Campus Operating System is an integrated Internet-of-Things platform designed to monitor, manage, and automate campus operations in real-time. The system creates a unified digital ecosystem where physical campus infrastructure (buildings, classrooms, parking, power systems) is continuously monitored through wireless sensor networks and represented in a live 3D digital twin.
-The platform combines three independent yet interconnected subsystems: a web-based admin dashboard with digital twin visualization for school administrators; a mobile app for emergency response and real-time alerts accessible to all users; and a standalone smart parking system for autonomous vehicle access control.
-Each subsystem is powered by an ESP32 microcontroller running independent firmware, enabling modular deployment, scalability, and fault tolerance. Data flows through WiFi connectivity to a local web server or cloud backend, ensuring real-time responsiveness without dependency on external internet infrastructure.
+An integrated **Artificial Intelligence of Things (AIoT)** platform for real-time monitoring, management, and automation of campus operations.
 
-SETUP & OPERATION GUIDE
-Connect & Run Web UI (Laptop / Desktop)
-STEP 1: Upload Firmware
-1.	Plug ESP32 #1 into laptop via USB cable
-2.	Open Arduino IDE
-3.	Load firmware sketch 
-4.	Select ESP32 board and correct COM port
-5.	Click Upload (firmware compiles and loads onto ESP32)
-STEP 2: WiFi Setup & IP Configuration
-1.	Press EN (reset) button on ESP32
-2.	Open Arduino IDE → Serial Monitor (set baud rate to 115200)
-3.	Wait for startup message and WiFi prompt
-4.	On your laptop/phone: Find and connect to "SmartCampus-setup" WiFi network
-5.	Open browser and navigate to 192.168.4.1 (captive portal appears)
-6.	Select your campus WiFi network from list
-7.	If using phone hotspot, change WiFi to 2.4 GHz (not 5 GHz)
-8.	Enter WiFi password and click Save
-9.	ESP32 connects to your WiFi. Serial monitor displays assigned IP address (e.g., 192.168.1.45) → NOTE THIS IP
-STEP 3: Start Local Web Server
-1.	Open project folder on VSCode on laptop
-2.	Navigate to project folder: cd smart-campus-twin
-3.	First time only: npm install (downloads React dependencies)
-4.	Run dev server: npm run dev
-5.	Terminal displays: "Local: http://localhost:5173"
-6.	Open this URL in web browser
-STEP 4: Connect Dashboard to ESP32
-1.	In web dashboard, click settings icon (gear symbol, top right)
-2.	In settings panel, enter: http://192.168.1.45 (use your ESP32 IP from step 2)
-3.	Click SAVE button
-4.	Navigate to LIVE tab in dashboard
-5.	Verify data streams in: Temperature, Humidity, Air Quality, RFID scans appear live
-6.	If no data: Check ESP32 is on same WiFi. Restart both ESP32 and laptop.
-STEP 5: Power from Battery
-1.	Once dashboard shows live data, unplug USB from laptop
-2.	Connect 5V battery pack to ESP32 VIN and GND pins
-3.	Web dashboard continues to show live data (ESP32 must stay on same WiFi)
-4.	Verify sensors still reading correctly
+The **AIoT Smart Campus Operating System** creates a unified digital ecosystem in which physical campus infrastructure—including buildings, classrooms, parking facilities, and power systems—is continuously monitored through wireless sensor networks and represented through a **live 3D digital twin**.
 
-Setup Mobile App (Fire Alerts & Energy Monitoring)
-1.	Open mobile app firmware source code in Arduino IDE
-2.	Find lines defining WiFi SSID and password
-3.	Replace with your campus WiFi network name and password
-4.	Compile and upload to ESP32 #2 via USB
-5.	Disconnect USB and power ESP32 #2 from 5V battery
-6.	Mobile app automatically connects to WiFi
-7.	Display shows real-time Voltage, Current, Power, Energy readings
-8.	Press physical SOS button or trigger fire sensor to activate buzzer alert
-NOTE: WiFi credentials are hardcoded in firmware. If network changes, re-edit code and re-upload to ESP32.
+The system combines three independent yet interconnected subsystems:
 
-Setup Smart Parking (Standalone)
-Smart Parking is independent and requires NO WiFi setup.
-Hardware Assembly
-1.	Connect 4 IR sensors to ESP32 GPIO pins (13, 32, 14, 33) as defined in parking firmware
-2.	Connect LCD 16x2 to I2C pins (GPIO 21 SDA, GPIO 22 SCL)
-3.	Connect servo motor to GPIO 26 and power (5V from Arduino UNO)
-4.	Battery connects to Arduino UNO VIN/GND (provides 5V boost for LCD and servo)
-5.	Ensure all grounds are common (ESP32 GND = Arduino GND = battery -)
-Deployment
-1.	Upload parking firmware to ESP32 #3 via Arduino IDE
-2.	Power on battery; LCD lights up and displays "Initializing..."
-3.	System performs self-test of IR sensors
-4.	LCD shows "Slots Free: 3" (all parking slots empty)
-5.	When car approaches entrance IR sensor: System detects vehicle
-6.	If slot available: Servo rotates to open gate
-7.	When car parks: Slot IR sensor detects it; LCD updates count
-8.	Repeat cycle automatically
-9.	If all slots full: LCD displays "PARKING FULL" and gate remains locked
+1. **Web-Based Admin Dashboard** — Provides administrators with real-time campus monitoring and 3D digital twin visualization.
+2. **Mobile Emergency & Energy Monitoring App** — Provides real-time alerts, emergency response, and electrical energy monitoring.
+3. **Standalone Smart Parking System** — Provides automated vehicle detection, parking-slot monitoring, and gate access control.
+
+Each subsystem uses an **ESP32 microcontroller with dedicated firmware**, enabling modular deployment, scalability, and fault isolation. Sensor data is transmitted through Wi-Fi to a local web server or cloud backend, allowing real-time monitoring without requiring continuous dependence on external internet services.
+
+---
+
+## System Architecture
+
+The platform consists of three primary subsystems:
+
+| Subsystem                     | Controller | Main Function                                                  |
+| ----------------------------- | ---------- | -------------------------------------------------------------- |
+| Smart Campus Digital Twin     | ESP32 #1   | Environmental monitoring, RFID, and web dashboard              |
+| Emergency & Energy Monitoring | ESP32 #2   | Fire/SOS alerts and electrical energy monitoring               |
+| Smart Parking                 | ESP32 #3   | Vehicle detection, parking-slot monitoring, and automated gate |
+
+---
+
+# Setup & Operation Guide
+
+## 1. Web UI Setup — Laptop / Desktop
+
+The web dashboard connects to **ESP32 #1** to display real-time campus sensor data.
+
+### Step 1: Upload Firmware
+
+1. Connect **ESP32 #1** to the laptop using a USB cable.
+2. Open **Arduino IDE**.
+3. Open the ESP32 firmware sketch.
+4. Select the appropriate **ESP32 board**.
+5. Select the correct **COM port**.
+6. Click **Upload**.
+7. Wait for the firmware to compile and upload successfully.
+
+---
+
+### Step 2: Wi-Fi Setup & IP Configuration
+
+1. Press the **EN / Reset** button on ESP32 #1.
+
+2. Open **Arduino IDE → Serial Monitor**.
+
+3. Set the baud rate to **115200**.
+
+4. Wait for the ESP32 startup messages and Wi-Fi configuration prompt.
+
+5. On a laptop or smartphone, search for the Wi-Fi network:
+
+   ```text
+   SmartCampus-setup
+   ```
+
+6. Connect to the `SmartCampus-setup` network.
+
+7. Open a web browser and navigate to:
+
+   ```text
+   http://192.168.4.1
+   ```
+
+8. The Wi-Fi configuration portal will appear.
+
+9. Select the campus Wi-Fi network from the available networks.
+
+10. If using a mobile hotspot, ensure that the hotspot operates on **2.4 GHz** rather than 5 GHz.
+
+11. Enter the Wi-Fi password.
+
+12. Click **Save**.
+
+13. ESP32 will connect to the configured Wi-Fi network.
+
+14. Check the Serial Monitor for the IP address assigned to the ESP32.
+
+Example:
+
+```text
+ESP32 IP Address: 192.168.1.45
+```
+
+> **Important:** Note down the assigned ESP32 IP address. It will be required to connect the web dashboard to the ESP32.
+
+---
+
+### Step 3: Start the Local Web Server
+
+1. Open the project folder in **Visual Studio Code**.
+
+2. Open the integrated terminal.
+
+3. Navigate to the project directory:
+
+   ```bash
+   cd smart-campus-twin
+   ```
+
+4. If this is the first setup, install the required dependencies:
+
+   ```bash
+   npm install
+   ```
+
+5. Start the development server:
+
+   ```bash
+   npm run dev
+   ```
+
+6. The terminal should display a local development URL similar to:
+
+   ```text
+   Local: http://localhost:5173
+   ```
+
+7. Open the displayed URL in a web browser.
+
+---
+
+### Step 4: Connect the Dashboard to ESP32
+
+1. Open the Smart Campus web dashboard.
+2. Click the **Settings ⚙️** icon in the top-right corner.
+3. Locate the ESP32/API connection field.
+4. Enter the IP address assigned to ESP32.
+
+Example:
+
+```text
+http://192.168.1.45
+```
+
+> Replace `192.168.1.45` with the IP address displayed in your ESP32 Serial Monitor.
+
+5. Click **Save**.
+6. Navigate to the **LIVE** tab.
+7. Verify that sensor data is being received in real time.
+
+The dashboard should display data such as:
+
+* Temperature
+* Humidity
+* Air Quality
+* RFID Scans
+
+#### Troubleshooting
+
+If live data is not appearing:
+
+* Confirm that the ESP32 is powered on.
+* Confirm that the ESP32 and laptop are connected to the **same Wi-Fi network**.
+* Verify the ESP32 IP address in the dashboard settings.
+* Check the ESP32 Serial Monitor for errors.
+* Restart the ESP32 and laptop if necessary.
+
+---
+
+### Step 5: Power ESP32 Using a Battery
+
+Once the dashboard is successfully receiving live sensor data:
+
+1. Disconnect the USB cable from the laptop.
+2. Connect a suitable **5V battery/power pack** to the ESP32 power input.
+3. Ensure the ESP32 remains connected to the same Wi-Fi network.
+4. Open the web dashboard again if necessary.
+5. Verify that sensor readings continue to update normally.
+
+> **Note:** The ESP32 must remain connected to the network for the dashboard to receive live data.
+
+---
+
+# 2. Mobile App Setup — Fire Alerts & Energy Monitoring
+
+The second subsystem uses **ESP32 #2** for emergency alerts and electrical energy monitoring.
+
+### Setup
+
+1. Open the mobile-app ESP32 firmware in **Arduino IDE**.
+2. Locate the Wi-Fi SSID and password definitions in the source code.
+3. Replace them with the credentials of the campus Wi-Fi network.
+
+Example:
+
+```cpp
+const char* ssid = "YOUR_WIFI_NAME";
+const char* password = "YOUR_WIFI_PASSWORD";
+```
+
+4. Compile the firmware.
+5. Connect **ESP32 #2** to the computer using USB.
+6. Select the appropriate ESP32 board and COM port.
+7. Upload the firmware.
+8. Disconnect the USB cable.
+9. Power ESP32 #2 using a suitable **5V battery/power source**.
+10. The ESP32 will automatically connect to the configured Wi-Fi network.
+11. Open the mobile application.
+12. Verify that real-time electrical measurements are being displayed.
+
+The system provides measurements such as:
+
+* Voltage
+* Current
+* Power
+* Energy
+
+### Emergency Alert Operation
+
+The system can trigger an emergency alert through:
+
+* Physical **SOS button**
+* Fire sensor
+
+When an emergency condition is detected:
+
+1. The sensor/button triggers the emergency event.
+2. ESP32 processes the event.
+3. The buzzer is activated.
+4. The mobile application receives/displays the corresponding alert.
+
+> **Important:** Wi-Fi credentials are currently hardcoded in the ESP32 firmware. If the Wi-Fi network changes, update the credentials in the source code and upload the firmware again.
+
+---
+
+# 3. Smart Parking System — Standalone Operation
+
+The Smart Parking subsystem operates independently from the Wi-Fi-based campus monitoring system.
+
+**No Wi-Fi configuration is required.**
+
+## Hardware Assembly
+
+### IR Sensors
+
+Connect the four IR sensors to the ESP32 GPIO pins:
+
+| IR Sensor   | ESP32 GPIO |
+| ----------- | ---------: |
+| IR Sensor 1 |    GPIO 13 |
+| IR Sensor 2 |    GPIO 32 |
+| IR Sensor 3 |    GPIO 14 |
+| IR Sensor 4 |    GPIO 33 |
+
+### 16×2 LCD
+
+Connect the I2C LCD as follows:
+
+| LCD Pin | E
